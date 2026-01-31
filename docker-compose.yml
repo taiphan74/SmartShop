@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: smartshop-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: smartshop
+      POSTGRES_USER: smartshop
+      POSTGRES_PASSWORD: smartshop
+    volumes:
+      - smartshop_pgdata:/var/lib/postgresql/data
+
+volumes:
+  smartshop_pgdata:
