@@ -2,24 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{seller/layout/seller-layout :: main-layout(~{::div})}">
 <body>
 <div class="max-w-3xl mx-auto px-4 md:px-6 py-6">
-    <!-- Header -->
     <div class="mb-6">
         <h2 class="text-lg md:text-xl font-bold text-gray-900" th:text="${product != null} ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'">Thêm sản phẩm mới</h2>
         <p class="mt-1 text-sm text-gray-500" th:text="${product != null} ? 'Cập nhật thông tin sản phẩm' : 'Điền thông tin để đăng bán sản phẩm mới'">Điền thông tin</p>
     </div>
 
-    <!-- Form -->
     <form th:action="${product != null} ? '/seller/products/' + ${product.id} : '/seller/products'"
           method="post" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
         <input type="hidden" name="shopId" th:value="${shopId}">
 
-        <!-- Image Upload Area -->
+        <!-- Image Upload -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Hình ảnh sản phẩm</label>
             <div id="image-upload-area" class="flex flex-wrap gap-3">
-                <!-- Preview container -->
                 <div id="image-previews" class="flex flex-wrap gap-3"></div>
-                <!-- Add button -->
                 <div id="add-image-btn"
                      class="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-brand-blue hover:bg-brand-blue-soft/30 transition-colors"
                      onclick="document.getElementById('image-input').click()">
@@ -30,8 +26,6 @@
             <input type="file" id="image-input" accept="image/*" multiple class="hidden" onchange="handleImageUpload(this)">
             <p class="mt-1.5 text-xs text-gray-400">Nhấn để chọn ảnh. Ảnh đầu tiên sẽ là ảnh chính.</p>
         </div>
-
-        <!-- Hidden inputs for image URLs -->
         <div id="hidden-image-inputs"></div>
 
         <!-- Name -->
@@ -72,6 +66,34 @@
             <span class="text-sm font-medium text-gray-700">Đang bán</span>
         </div>
 
+        <!-- Options & Variants -->
+        <div class="border-t border-gray-100 pt-5">
+            <div class="flex items-center justify-between mb-3">
+                <label class="block text-sm font-medium text-gray-700">Tùy chọn &amp; Biến thể</label>
+                <button type="button" onclick="addOption()" class="text-xs bg-brand-blue text-white px-3 py-1.5 rounded-lg hover:bg-brand-blue/90 transition-colors">+ Thêm tùy chọn</button>
+            </div>
+            <div id="options-container" class="space-y-3"></div>
+            <p class="mt-2 text-xs text-gray-400">Thêm tùy chọn (Màu, Size...) và giá trị để tự động sinh biến thể.</p>
+        </div>
+
+        <!-- Variant Table -->
+        <div id="variant-section" class="hidden border-t border-gray-100 pt-5">
+            <label class="block text-sm font-medium text-gray-700 mb-3">Danh sách biến thể</label>
+            <div class="overflow-x-auto rounded-xl border border-gray-200">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">Thuộc tính</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">SKU <span class="text-red-500">*</span></th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">Giá <span class="text-red-500">*</span></th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">Tồn kho</th>
+                        </tr>
+                    </thead>
+                    <tbody id="variant-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Actions -->
         <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
             <button type="submit"
@@ -86,46 +108,31 @@
     </form>
 
 <script th:inline="javascript">
-    const uploadedImages = [];
+    var uploadedImages = [];
 
     function handleImageUpload(input) {
-        const files = input.files;
+        var files = input.files;
         if (!files.length) return;
-
-        Array.from(files).forEach(file => {
-            const formData = new FormData();
+        Array.from(files).forEach(function(file) {
+            var formData = new FormData();
             formData.append('file', file);
-
-            fetch('/seller/products/upload-image', {
-                credentials: 'same-origin',
-                method: 'POST',
-                body: formData
+            fetch('/seller/products/upload-image', { credentials: 'same-origin', method: 'POST', body: formData })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.url) { uploadedImages.push(data.url); renderPreviews(); }
             })
-            .then(res => res.json())
-            .then(data => {
-                console.log("Upload response:", data);
-                if (data.url) {
-                    uploadedImages.push(data.url);
-                    renderPreviews();
-                }
-            })
-            .catch(err => {
-                alert('Lỗi upload ảnh: ' + err.message);
-            });
+            .catch(function(err) { alert('Lỗi upload ảnh: ' + err.message); });
         });
-
         input.value = '';
     }
 
     function renderPreviews() {
-        const container = document.getElementById('image-previews');
-        const hiddenContainer = document.getElementById('hidden-image-inputs');
+        var container = document.getElementById('image-previews');
+        var hiddenContainer = document.getElementById('hidden-image-inputs');
         container.innerHTML = '';
         hiddenContainer.innerHTML = '';
-
-        uploadedImages.forEach((url, index) => {
-            // Preview card
-            const card = document.createElement('div');
+        uploadedImages.forEach(function(url, index) {
+            var card = document.createElement('div');
             card.style.cssText = 'position:relative;width:6rem;height:6rem;border-radius:0.75rem;overflow:hidden;border:1px solid #e5e7eb;';
             card.innerHTML =
                 '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;">' +
@@ -136,46 +143,28 @@
                     '</button>' +
                 '</div>';
             container.appendChild(card);
-
-            // Hidden input
-            const hidden = document.createElement('input');
-            hidden.type = 'hidden';
-            hidden.name = 'imageUrls';
-            hidden.value = url;
+            var hidden = document.createElement('input');
+            hidden.type = 'hidden'; hidden.name = 'imageUrls'; hidden.value = url;
             hiddenContainer.appendChild(hidden);
         });
-
-        // Main image hidden input
         if (uploadedImages.length > 0) {
-            const mainHidden = document.createElement('input');
-            mainHidden.type = 'hidden';
-            mainHidden.name = 'mainImageUrl';
-            mainHidden.value = uploadedImages[0];
+            var mainHidden = document.createElement('input');
+            mainHidden.type = 'hidden'; mainHidden.name = 'mainImageUrl'; mainHidden.value = uploadedImages[0];
             hiddenContainer.appendChild(mainHidden);
         }
     }
 
-    function removeImage(index) {
-        uploadedImages.splice(index, 1);
-        renderPreviews();
-    }
+    function removeImage(index) { uploadedImages.splice(index, 1); renderPreviews(); }
+    function setMainImage(index) { var url = uploadedImages.splice(index, 1)[0]; uploadedImages.unshift(url); renderPreviews(); }
 
-    function setMainImage(index) {
-        const url = uploadedImages.splice(index, 1)[0];
-        uploadedImages.unshift(url);
-        renderPreviews();
-    }
-
-    // Load existing images for edit mode
-    const existingImages = /*[[${product != null && product.images != null ? product.images : null}]]*/ null;
-    if (existingImages && existingImages.length > 0) {
-        existingImages.sort((a, b) => (b.isMain ? 1 : 0) - (a.isMain ? 1 : 0));
-        existingImages.forEach(img => uploadedImages.push(img.imageUrl));
+    /*[+ var existingImages = [[${product != null && product.images != null ? product.images : null}]]; +]*/
+    if (typeof existingImages !== 'undefined' && existingImages && existingImages.length > 0) {
+        existingImages.sort(function(a, b) { return (b.isMain ? 1 : 0) - (a.isMain ? 1 : 0); });
+        existingImages.forEach(function(img) { uploadedImages.push(img.imageUrl); });
         renderPreviews();
     }
 </script>
+<script th:src="@{/js/seller-product-form.js}"></script>
 </div>
-
-
 </body>
 </html>

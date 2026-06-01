@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 public class ProductRequest {
     
     @NotBlank(message = "Tên sản phẩm không được để trống")
@@ -22,6 +24,12 @@ public class ProductRequest {
     private List<String> imageUrls = new ArrayList<>();
 
     private String mainImageUrl;
+
+    @Valid
+    private List<NestedOptionRequest> options = new ArrayList<>();
+
+    @Valid
+    private List<NestedVariantRequest> variants = new ArrayList<>();
 
     public ProductRequest() {
     }
@@ -81,4 +89,10 @@ public class ProductRequest {
     public void setMainImageUrl(String mainImageUrl) {
         this.mainImageUrl = mainImageUrl;
     }
+
+    public List<NestedOptionRequest> getOptions() { return options; }
+    public void setOptions(List<NestedOptionRequest> options) { this.options = options; }
+
+    public List<NestedVariantRequest> getVariants() { return variants; }
+    public void setVariants(List<NestedVariantRequest> variants) { this.variants = variants; }
 }
