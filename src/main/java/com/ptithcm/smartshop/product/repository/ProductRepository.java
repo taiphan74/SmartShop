@@ -204,6 +204,4 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
            "AND LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<ProductProjection> searchPublicProducts(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.shop.id = :shopId")
-    Long countByShopId(@Param("shopId") UUID shopId);
 }

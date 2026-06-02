@@ -147,7 +147,7 @@ public class SellerProductController extends BaseSellerController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
         System.out.println("=== UPLOAD DEBUG: file=" + (file != null ? file.getOriginalFilename() : "null") + " size=" + (file != null ? file.getSize() : 0));
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "File rỗng"));
         }
 
