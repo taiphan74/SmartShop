@@ -224,6 +224,9 @@ public class ProductMapper {
         dto.setId(Objects.toString(value.getId(), null));
         dto.setValue(value.getValue());
         dto.setSortOrder(value.getSortOrder());
+        if (value.getOption() != null) {
+            dto.setOptionId(Objects.toString(value.getOption().getId(), null));
+        }
         return dto;
     }
 }

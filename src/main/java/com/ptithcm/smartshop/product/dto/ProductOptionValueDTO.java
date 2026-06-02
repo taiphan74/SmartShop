@@ -2,6 +2,7 @@ package com.ptithcm.smartshop.product.dto;
 
 public class ProductOptionValueDTO {
     private String id;
+    private String optionId;
     private String value;
     private Integer sortOrder;
 
@@ -27,6 +28,14 @@ public class ProductOptionValueDTO {
 
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public String getOptionId() {
+        return optionId;
+    }
+
+    public void setOptionId(String optionId) {
+        this.optionId = optionId;
     }
 }
 
