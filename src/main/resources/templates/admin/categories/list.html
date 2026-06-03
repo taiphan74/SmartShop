@@ -4,7 +4,7 @@
 <div class="admin-page-header">
     <div>
         <h1 class="admin-page-title">Quản lý danh mục</h1>
-        <p class="admin-page-subtitle">Quản lý danh mục theo cây cha con. Slug và path được tự sinh.</p>
+        <p class="admin-page-subtitle">Sắp xếp danh mục theo nhóm cha con.</p>
     </div>
     <a th:href="@{/admin/categories/new}" class="admin-btn-primary">Thêm danh mục</a>
 </div>
@@ -17,8 +17,6 @@
         <thead>
             <tr>
                 <th class="p-4">Cây danh mục</th>
-                <th class="p-4">Slug</th>
-                <th class="p-4">Path</th>
                 <th class="p-4">Cấp</th>
                 <th class="p-4">Thao tác</th>
             </tr>
@@ -27,12 +25,10 @@
             <tr th:each="category : ${categories.content}">
                 <td class="p-4">
                     <div class="admin-category-tree-node" th:style="|--category-level: ${category.level == null ? 0 : category.level}|">
-                        <span class="admin-category-tree-branch" th:text="${category.level == 0 ? 'Root' : '└'}">└</span>
+                        <span class="admin-category-tree-branch" th:text="${category.level == 0 ? 'Gốc' : '└'}">└</span>
                         <span class="font-semibold text-slate-800" th:text="${category.name}">Name</span>
                     </div>
                 </td>
-                <td class="p-4 text-slate-600" th:text="${category.slug}">slug</td>
-                <td class="p-4 text-slate-600" th:text="${category.path}">path</td>
                 <td class="p-4"><span class="admin-badge-info" th:text="${category.level}">0</span></td>
                 <td class="p-4 flex gap-2">
                     <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}" class="admin-btn-secondary text-sm">Sửa</a>
@@ -42,7 +38,7 @@
                 </td>
             </tr>
             <tr th:if="${categories.empty}">
-                <td class="p-4 admin-empty" colspan="5">Không có danh mục.</td>
+                <td class="p-4 admin-empty" colspan="3">Không có danh mục.</td>
             </tr>
         </tbody>
     </table>

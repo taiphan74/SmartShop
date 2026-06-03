@@ -12,7 +12,6 @@
     <div class="mb-6">
         <h2 class="text-lg font-semibold mb-4 text-slate-800">Danh sách Banner</h2>
 
-        <!-- Bulk Action Header -->
         <div class="admin-card">
             <div class="p-5 border-b border-slate-200 flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -28,7 +27,6 @@
                 </div>
             </div>
 
-            <!-- Banner Rows -->
             <div class="divide-y divide-slate-100">
                 <div th:each="banner : ${banners}" class="p-4 hover:bg-slate-50 flex items-center gap-4">
                     <input type="checkbox" class="h-4 w-4 rounded text-blue-600 banner-checkbox" th:attr="data-banner-id=${banner.id}">
@@ -36,9 +34,9 @@
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-slate-900 truncate" th:text="${banner.title != null && !banner.title.isBlank() ? banner.title : 'Không tiêu đề'}">Banner Title</p>
                         <div class="flex items-center gap-2 text-xs mt-1">
-                            <span class="text-slate-500">Order: <span th:text="${banner.displayOrder}">1</span></span>
-                            <span th:if="${banner.isActive}" class="text-green-600">● Active</span>
-                            <span th:unless="${banner.isActive}" class="text-red-600">● Hidden</span>
+                            <span class="text-slate-500">Thứ tự: <span th:text="${banner.displayOrder}">1</span></span>
+                            <span th:if="${banner.isActive}" class="text-green-600">● Đang hiện</span>
+                            <span th:unless="${banner.isActive}" class="text-red-600">● Đã ẩn</span>
                         </div>
                     </div>
                     <div class="flex gap-2 ml-4">
@@ -54,7 +52,6 @@
         </div>
     </div>
 
-    <!-- Create Form -->
     <div class="admin-card admin-card-padded mt-8">
         <h2 class="text-lg font-semibold mb-4 text-slate-800" th:text="${editingId != null ? 'Sửa Banner' : 'Thêm Banner mới'}">Thêm Banner mới</h2>
         <form th:action="${editingId != null ? '/admin/banners/update/' + editingId : '/admin/banners/create'}" method="post" enctype="multipart/form-data" class="space-y-4">
@@ -95,7 +92,6 @@
 </main>
 
 <script>
-    // Bulk action handlers
     document.getElementById('select-all-banners').addEventListener('change', function(e) {
         document.querySelectorAll('.banner-checkbox').forEach(checkbox => {
             checkbox.checked = e.target.checked;
@@ -109,7 +105,7 @@
             return;
         }
         if (confirm(`Xóa ${selected.length} banner đã chọn?`)) {
-            alert('Bulk delete would be implemented with endpoint: POST /admin/banners/bulk-delete with IDs: ' + selected.join(', '));
+            alert('Chức năng xóa nhiều banner đang được cập nhật.');
         }
     });
 
@@ -119,7 +115,7 @@
             alert('Vui lòng chọn ít nhất một banner');
             return;
         }
-        alert('Bulk activate would be implemented with endpoint: POST /admin/banners/bulk-activate with IDs: ' + selected.join(', '));
+        alert('Chức năng hiện nhiều banner đang được cập nhật.');
     });
 
     document.getElementById('bulk-deactivate').addEventListener('click', function() {
@@ -128,7 +124,7 @@
             alert('Vui lòng chọn ít nhất một banner');
             return;
         }
-        alert('Bulk deactivate would be implemented with endpoint: POST /admin/banners/bulk-deactivate with IDs: ' + selected.join(', '));
+        alert('Chức năng ẩn nhiều banner đang được cập nhật.');
     });
 </script>
 </body>

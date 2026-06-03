@@ -4,7 +4,7 @@
 <div class="mb-6">
     <a th:href="@{/admin/categories}" class="admin-back-link">← Quay lại danh mục</a>
     <h1 class="mt-2 text-2xl font-bold text-slate-900" th:text="${category == null ? 'Thêm danh mục' : 'Sửa danh mục'}">Form</h1>
-    <p class="mt-1 text-sm text-slate-600">Slug, path và cấp danh mục sẽ tự cập nhật theo tên và danh mục cha.</p>
+    <p class="mt-1 text-sm text-slate-600">Thông tin hiển thị sẽ tự cập nhật theo tên và danh mục cha.</p>
 </div>
 
 <form id="category-form"
@@ -32,21 +32,21 @@
                         th:value="${parent.id}"
                         th:disabled="${category != null and parent.id == category.id}"
                         th:attr="data-path=${parent.path},data-level=${parent.level}"
-                        th:text="${#strings.repeat('— ', parent.level)} + ${parent.name} + ' (' + ${parent.path} + ')'">parent</option>
+                        th:text="${#strings.repeat('— ', parent.level)} + ${parent.name}">parent</option>
             </select>
         </label>
 
         <div class="grid gap-4 md:grid-cols-3">
             <div class="admin-category-preview">
-                <span>Slug tự sinh</span>
+                <span>Tên đường dẫn</span>
                 <strong id="category-slug-preview" th:text="*{slug} ?: 'tu-dong'">tu-dong</strong>
             </div>
             <div class="admin-category-preview md:col-span-2">
-                <span>Path tự sinh</span>
+                <span>Đường dẫn xem trước</span>
                 <strong id="category-path-preview" th:text="*{path} ?: 'tu-dong'">tu-dong</strong>
             </div>
             <div class="admin-category-preview">
-                <span>Cấp</span>
+                <span>Cấp hiển thị</span>
                 <strong id="category-level-preview" th:text="*{level} ?: 0">0</strong>
             </div>
         </div>

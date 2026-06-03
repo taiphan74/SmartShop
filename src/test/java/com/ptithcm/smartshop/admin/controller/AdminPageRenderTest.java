@@ -49,11 +49,11 @@ class AdminPageRenderTest {
 				.andExpect(content().string(containsString("Quản lý sản phẩm")));
 	}
 	@Test
-	void adminCategoryPagesRenderWithGeneratedSlugAndTreeUi() throws Exception {
+	void adminCategoryPagesRenderWithGeneratedFieldsAndTreeUi() throws Exception {
 		mockMvc.perform(get("/admin/categories").with(user("admin").roles("ADMIN")))
 				.andExpect(status().isOk())
 				.andExpect(content().string(containsString("admin-category-tree-node")))
-				.andExpect(content().string(containsString("Slug")));
+				.andExpect(content().string(containsString("Cây danh mục")));
 
 		mockMvc.perform(get("/admin/categories/new").with(user("admin").roles("ADMIN")))
 				.andExpect(status().isOk())

@@ -4,7 +4,7 @@
 <div class="admin-page-header">
     <div>
         <h1 class="admin-page-title">Quản lý sản phẩm</h1>
-        <p class="admin-page-subtitle">CRUD sản phẩm, variant và ảnh.</p>
+        <p class="admin-page-subtitle">Theo dõi sản phẩm, hình ảnh và phân loại đang bán.</p>
     </div>
 </div>
 
@@ -26,7 +26,6 @@
             <tr th:each="product : ${products.content}">
                 <td class="p-4">
                     <a class="font-semibold text-indigo-700 hover:text-indigo-900" th:href="@{/admin/products/{id}(id=${product.id})}" th:text="${product.name}">Product</a>
-                    <p class="text-xs text-slate-500 mt-1" th:text="${product.slug}">slug</p>
                 </td>
                 <td class="p-4 text-slate-600" th:text="${product.shop.name}">Shop</td>
                 <td class="p-4 text-slate-600" th:text="${product.category.name}">Category</td>
