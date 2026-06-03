@@ -90,6 +90,25 @@
                         </div>
                     </div>
 
+                    <div th:if="${product.shopId != null}" class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface-soft p-4">
+                        <div class="flex min-w-0 items-center gap-3">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-white text-sm font-bold text-brand-blue">
+                                <img th:if="${product.shopLogoUrl != null && !product.shopLogoUrl.isBlank()}" th:src="${product.shopLogoUrl}" th:alt="${product.shopName}" class="h-full w-full object-cover">
+                                <span th:unless="${product.shopLogoUrl != null && !product.shopLogoUrl.isBlank()}" th:text="${product.shopName != null && !product.shopName.isBlank()} ? ${product.shopName.substring(0, 1)} : 'S'">S</span>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-semibold text-text-primary" th:text="${product.shopName}">Tên cửa hàng</p>
+                                <p class="text-xs text-text-secondary">Cửa hàng phân phối</p>
+                            </div>
+                        </div>
+                        <form th:action="@{'/wishlist/shops/' + ${product.shopId} + '/toggle'}" method="post">
+                            <input type="hidden" name="redirectUrl" th:value="@{'/products/' + ${product.slug}}">
+                            <button type="submit"
+                                    class="rounded-md border border-brand-blue bg-white px-4 py-2 text-sm font-semibold text-brand-blue hover:bg-blue-50"
+                                    th:text="${shopWishlisted} ? 'Đã lưu shop' : 'Lưu shop'">Lưu shop</button>
+                        </form>
+                    </div>
+
                     <!-- Price Box -->
                     <div class="bg-surface-soft flex items-center gap-3 py-4 pl-5 rounded-lg mb-6">
                         <div class="text-brand-red text-[32px] font-medium leading-none" th:text="'₫' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">₫479.000</div>
@@ -131,6 +150,12 @@
 
                     <!-- Actions -->
                     <div class="flex flex-wrap items-center gap-3.5 mt-4">
+                        <form th:action="@{'/wishlist/products/' + ${product.id} + '/toggle'}" method="post" class="w-full sm:w-auto">
+                            <input type="hidden" name="redirectUrl" th:value="@{'/products/' + ${product.slug}}">
+                            <button type="submit"
+                                    class="h-12 w-full rounded-md border border-brand-red bg-white px-5 font-medium text-brand-red shadow-sm transition-colors hover:bg-brand-red-soft sm:w-auto"
+                                    th:text="${productWishlisted} ? 'Đã lưu Wishlist' : 'Thêm Wishlist'">Thêm Wishlist</button>
+                        </form>
                         <form th:action="@{/cart/add}" method="post" class="flex-1 min-w-[260px]">
                             <input type="hidden" name="productId" th:value="${product.id}">
                             <input type="hidden" name="variantId" id="add-to-cart-variant-id" value="">

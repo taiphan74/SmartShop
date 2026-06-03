@@ -81,6 +81,13 @@ public class ProductMapper {
             dto.setCategoryName(product.getCategory().getName());
         }
 
+        if (product.getShop() != null) {
+            dto.setShopId(Objects.toString(product.getShop().getId(), null));
+            dto.setShopName(product.getShop().getName());
+            dto.setShopSlug(product.getShop().getSlug());
+            dto.setShopLogoUrl(product.getShop().getLogoUrl());
+        }
+
         if (product.getImages() != null) {
             dto.setImages(product.getImages().stream()
                     .map(this::imageToDTO)

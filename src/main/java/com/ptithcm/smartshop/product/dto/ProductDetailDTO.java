@@ -17,6 +17,10 @@ public class ProductDetailDTO {
     private LocalDateTime updatedAt;
     private String categoryId;
     private String categoryName;
+    private String shopId;
+    private String shopName;
+    private String shopSlug;
+    private String shopLogoUrl;
     private Long reviewCount;
     private Long ratingSum;
     private BigDecimal averageRating;
@@ -114,6 +118,38 @@ public class ProductDetailDTO {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
+
+    public String getShopLogoUrl() {
+        return shopLogoUrl;
+    }
+
+    public void setShopLogoUrl(String shopLogoUrl) {
+        this.shopLogoUrl = shopLogoUrl;
     }
 
     public Long getReviewCount() {

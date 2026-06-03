@@ -131,7 +131,7 @@
             }
 
             reviews.forEach(renderReview);
-            currentPage = data.number || page;
+            currentPage = data.pageNo || page;
             loadMore.classList.toggle('hidden', data.last === true || reviews.length === 0);
         } catch (error) {
             summary.textContent = error.message;
