@@ -51,6 +51,7 @@
               <div class="site-account-dropdown">
                 <a href="/profile" class="site-account-dropdown__item" th:text="#{nav.account}">Account</a>
                 <a href="/my/orders" class="site-account-dropdown__item" th:text="#{nav.my_orders}">My orders</a>
+                <a th:if="${sessionUser.roles != null and #lists.contains(sessionUser.roles, 'ADMIN')}" href="/admin" class="site-account-dropdown__item" th:text="#{nav.admin}">Admin</a>
                 <a th:if="${sessionUser.roles != null and (#strings.contains(sessionUser.roles.toString(), 'PROMOTION_MANAGER') or #strings.contains(sessionUser.roles.toString(), 'ADMIN'))}" href="/promotion/vouchers" class="site-account-dropdown__item" th:text="#{nav.promotion}">Promotion</a>
                 <form th:action="@{/auth/logout}" method="post">
                   <button type="submit" class="site-account-dropdown__item site-account-dropdown__button font-bold text-red-600 hover:text-red-700" th:text="#{nav.logout}">Log out</button>

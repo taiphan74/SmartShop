@@ -4,6 +4,7 @@ import com.ptithcm.smartshop.admin.dto.AdminCategoryForm;
 import com.ptithcm.smartshop.product.entity.Category;
 import com.ptithcm.smartshop.product.repository.CategoryRepository;
 import com.ptithcm.smartshop.product.repository.ProductRepository;
+import com.ptithcm.smartshop.shared.util.SlugUtil;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,27 +35,16 @@ public class AdminCategoryManagementService {
 
     @Transactional
     public Category create(AdminCategoryForm form) {
-        if (categoryRepository.existsBySlug(form.getSlug())) {
-            throw new IllegalArgumentException("Slug danh mục đã tồn tại");
-        }
-        if (categoryRepository.existsByPath(form.getPath())) {
-            throw new IllegalArgumentException("Path danh mục đã tồn tại");
-        }
         Category category = new Category();
-        applyForm(category, form);
+        applyForm(category, form, null);
         return categoryRepository.save(category);
     }
 
     @Transactional
     public void update(UUID categoryId, AdminCategoryForm form) {
         Category category = get(categoryId);
-        if (categoryRepository.existsBySlugAndIdNot(form.getSlug(), categoryId)) {
-            throw new IllegalArgumentException("Slug danh mục đã tồn tại");
-        }
-        if (categoryRepository.existsByPathAndIdNot(form.getPath(), categoryId)) {
-            throw new IllegalArgumentException("Path danh mục đã tồn tại");
-        }
-        applyForm(category, form);
+        applyForm(category, form, categoryId);
+        refreshChildPaths(category);
     }
 
     @Transactional
@@ -66,11 +56,50 @@ public class AdminCategoryManagementService {
         categoryRepository.delete(category);
     }
 
-    private void applyForm(Category category, AdminCategoryForm form) {
+    private void applyForm(Category category, AdminCategoryForm form, UUID currentId) {
+        Category parent = form.getParentId() == null ? null : get(form.getParentId());
+        if (parent != null && currentId != null && isSelfOrDescendant(parent, currentId)) {
+            throw new IllegalArgumentException("Danh mục cha không hợp lệ");
+        }
+
+        String slug = createUniqueSlug(form.getName(), currentId);
         category.setName(form.getName().trim());
-        category.setSlug(form.getSlug().trim());
-        category.setPath(form.getPath().trim());
-        category.setLevel(form.getLevel());
-        category.setParent(form.getParentId() == null ? null : get(form.getParentId()));
+        category.setParent(parent);
+        category.setSlug(slug);
+        category.setLevel(parent == null ? 0 : parent.getLevel() + 1);
+        category.setPath(parent == null ? slug : parent.getPath() + "/" + slug);
+    }
+
+    private String createUniqueSlug(String name, UUID currentId) {
+        String baseSlug = SlugUtil.toSlug(name.trim());
+        if (baseSlug.isBlank()) {
+            baseSlug = "danh-muc";
+        }
+
+        String slug = baseSlug;
+        int suffix = 2;
+        while (currentId == null ? categoryRepository.existsBySlug(slug) : categoryRepository.existsBySlugAndIdNot(slug, currentId)) {
+            slug = baseSlug + "-" + suffix++;
+        }
+        return slug;
+    }
+
+    private boolean isSelfOrDescendant(Category candidateParent, UUID categoryId) {
+        Category current = candidateParent;
+        while (current != null) {
+            if (categoryId.equals(current.getId())) {
+                return true;
+            }
+            current = current.getParent();
+        }
+        return false;
+    }
+
+    private void refreshChildPaths(Category parent) {
+        for (Category child : categoryRepository.findByParent(parent)) {
+            child.setLevel(parent.getLevel() + 1);
+            child.setPath(parent.getPath() + "/" + child.getSlug());
+            refreshChildPaths(child);
+        }
     }
 }

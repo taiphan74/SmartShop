@@ -1,19 +1,13 @@
 package com.ptithcm.smartshop.admin.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class AdminCategoryForm {
     @NotBlank(message = "Tên danh mục không được để trống")
     private String name;
-    @NotBlank(message = "Slug không được để trống")
     private String slug;
-    @NotBlank(message = "Path không được để trống")
     private String path;
-    @NotNull(message = "Level không được để trống")
-    @Min(value = 0, message = "Level không được âm")
     private Integer level;
     private UUID parentId;
 

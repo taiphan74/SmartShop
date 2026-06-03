@@ -26,6 +26,8 @@ class AdminPageRenderTest {
 				.andExpect(content().string(containsString("admin-shell")))
 				.andExpect(content().string(containsString("admin-sidebar")))
 				.andExpect(content().string(containsString("admin-page")))
+				.andExpect(content().string(containsString("href=\"/\"")))
+				.andExpect(content().string(containsString("Về trang thường")))
 				.andExpect(content().string(containsString("Bảng điều khiển tổng quan")))
 				.andExpect(content().string(containsString("Tổng doanh thu")));
 	}
@@ -45,5 +47,17 @@ class AdminPageRenderTest {
 				.andExpect(status().isOk())
 				.andExpect(content().string(containsString("admin-table")))
 				.andExpect(content().string(containsString("Quản lý sản phẩm")));
+	}
+	@Test
+	void adminCategoryPagesRenderWithGeneratedSlugAndTreeUi() throws Exception {
+		mockMvc.perform(get("/admin/categories").with(user("admin").roles("ADMIN")))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("admin-category-tree-node")))
+				.andExpect(content().string(containsString("Slug")));
+
+		mockMvc.perform(get("/admin/categories/new").with(user("admin").roles("ADMIN")))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("category-slug-preview")))
+				.andExpect(content().string(containsString("category-parent")));
 	}
 }
