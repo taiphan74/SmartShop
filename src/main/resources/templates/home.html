@@ -42,9 +42,13 @@
 					<div class="swiper-wrapper">
 						<div th:each="banner : ${banners}" class="swiper-slide relative"
 							 th:if="${banner.isActive}">
-							<img th:src="${banner.imageUrl}"
-								 th:alt="${banner.title}"
-								 class="w-full h-[300px] md:h-[400px] object-cover"/>
+							<a th:href="${banner.linkUrl != null and !banner.linkUrl.isBlank() ? banner.linkUrl : '#'}"
+							   class="block w-full h-full cursor-pointer"
+							   th:attr="aria-label=${banner.title}">
+								<img th:src="${banner.imageUrl}"
+									 th:alt="${banner.title}"
+									 class="w-full h-[300px] md:h-[400px] object-cover"/>
+							</a>
 						</div>
 					</div>
 					<div class="swiper-pagination"></div>

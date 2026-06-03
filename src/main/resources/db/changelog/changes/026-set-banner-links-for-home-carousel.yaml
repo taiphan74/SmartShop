@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 026-set-banner-links-for-home-carousel
+      author: claude
+      changes:
+        - update:
+            tableName: banners
+            columns:
+              - column:
+                  name: link_url
+                  value: /products?category=dien-tu
+            where: title = 'Khuyến mãi đặc biệt'
+        - update:
+            tableName: banners
+            columns:
+              - column:
+                  name: link_url
+                  value: /products?category=me-be
+            where: title = 'Sản phẩm mới'
