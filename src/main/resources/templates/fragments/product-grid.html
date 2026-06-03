@@ -4,7 +4,7 @@
   <!-- Component: Product Grid (E-commerce Standard Style) -->
   <div th:fragment="grid(products)" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
     
-    <a th:each="product, iter : ${products.content != null ? products.content : products}"
+    <a th:each="product, iter : ${products instanceof T(org.springframework.data.domain.Page) ? products.content : products}"
        th:href="@{/products/{slug}(slug=${product.slug})}"
        class="group block bg-white rounded-lg border border-border hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full">
 

@@ -28,13 +28,12 @@
         </section>
 
         <section class="empty-state" th:if="${products == null or products.isEmpty()}">
-                <p th:if="${activeCategory != null}" th:text="#{product.list.category_empty}">
-                    Chưa có sản phẩm nào trong danh mục này.
-                </p>
-                <p th:if="${activeCategory == null}" th:text="#{product.list.empty}">
-                    Chưa có sản phẩm nào để hiển thị.
-                </p>
-            </div>
+            <p th:if="${activeCategory != null}" th:text="#{product.list.category_empty}">
+                Chưa có sản phẩm nào trong danh mục này.
+            </p>
+            <p th:if="${activeCategory == null}" th:text="#{product.list.empty}">
+                Chưa có sản phẩm nào để hiển thị.
+            </p>
         </section>
     </main>
 
