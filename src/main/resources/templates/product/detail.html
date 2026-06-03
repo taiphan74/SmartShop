@@ -187,38 +187,44 @@
             <div id="review-form-wrap" class="hidden mb-6 rounded-lg border border-border bg-surface-soft p-4">
                 <h3 class="text-base font-semibold text-text-primary mb-3" th:text="#{product.review.write}">Viết đánh giá của bạn</h3>
 
-                <form id="review-form" class="grid gap-3">
-                    <label class="grid gap-1 text-sm text-text-secondary">
-                        <span th:text="#{product.review.eligible_order}">Đơn hàng đủ điều kiện</span>
-                        <select id="review-order-id" class="rounded-md border border-border-strong bg-white px-3 py-2 text-text-primary"></select>
-                    </label>
+                <form id="review-form" class="space-y-6">
+                    <select id="review-order-id" class="hidden"></select>
+                    <input type="hidden" id="review-rating" value="5" />
 
-                    <label class="grid gap-1 text-sm text-text-secondary">
-                        <span th:text="#{product.review.rating}">Số sao</span>
-                        <select id="review-rating" class="rounded-md border border-border-strong bg-white px-3 py-2 text-text-primary">
-                            <option value="5" th:text="#{product.review.rating.5}">★★★★★ - Rất tốt</option>
-                            <option value="4" th:text="#{product.review.rating.4}">★★★★☆ - Tốt</option>
-                            <option value="3" th:text="#{product.review.rating.3}">★★★☆☆ - Bình thường</option>
-                            <option value="2" th:text="#{product.review.rating.2}">★★☆☆☆ - Không hài lòng</option>
-                            <option value="1" th:text="#{product.review.rating.1}">★☆☆☆☆ - Tệ</option>
-                        </select>
-                    </label>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-text-secondary">Mức độ hài lòng</label>
+                        <div class="flex items-center gap-2 core-star-container">
+                            <button type="button" data-star="1" class="text-amber-400 p-1 transition-all duration-200 hover:scale-125 focus:outline-none active:scale-95">
+                                <svg class="w-8 h-8 fill-current stroke-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            </button>
+                            <button type="button" data-star="2" class="text-amber-400 p-1 transition-all duration-200 hover:scale-125 focus:outline-none active:scale-95">
+                                <svg class="w-8 h-8 fill-current stroke-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            </button>
+                            <button type="button" data-star="3" class="text-amber-400 p-1 transition-all duration-200 hover:scale-125 focus:outline-none active:scale-95">
+                                <svg class="w-8 h-8 fill-current stroke-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            </button>
+                            <button type="button" data-star="4" class="text-amber-400 p-1 transition-all duration-200 hover:scale-125 focus:outline-none active:scale-95">
+                                <svg class="w-8 h-8 fill-current stroke-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            </button>
+                            <button type="button" data-star="5" class="text-amber-400 p-1 transition-all duration-200 hover:scale-125 focus:outline-none active:scale-95">
+                                <svg class="w-8 h-8 fill-current stroke-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            </button>
+                            
+                        </div>
+                    </div>
 
-                    <label class="grid gap-1 text-sm text-text-secondary">
-                        <span th:text="#{product.review.comment}">Bình luận</span>
-                        <textarea id="review-comment"
-                                  rows="4"
-                                  maxlength="2000"
-                                  th:placeholder="#{product.review.comment_placeholder}" placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
-                                  class="rounded-md border border-border-strong bg-white px-3 py-2 text-text-primary outline-none focus:ring-1 focus:ring-primary"></textarea>
-                    </label>
+                    <div class="space-y-2">
+                        <label for="review-comment" class="block text-xs font-bold uppercase tracking-wider text-text-secondary" th:text="#{product.review.comment}">Bình luận</label>
+                        <textarea id="review-comment" rows="4" maxlength="2000"
+                                  th:placeholder="#{product.review.comment_placeholder}" placeholder="Chia sẻ cảm nhận chân thực của bạn về sản phẩm..."
+                                  class="w-full font-sans rounded-lg border border-border-strong bg-white px-4 py-3 text-text-primary outline-none transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.02)] focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5 resize-none placeholder:text-text-secondary/50"></textarea>
+                    </div>
 
-                    <div class="flex items-center gap-3">
-                        <button type="submit"
-                                class="w-auto rounded-md bg-brand-blue hover:bg-brand-blue-hover text-white font-medium px-5 py-2">
-                            <span th:text="#{product.review.submit}">Gửi đánh giá</span>
+                    <div class="flex items-center gap-4 pt-2">
+                        <button type="submit" class="relative group overflow-hidden rounded-lg bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold text-sm px-7 py-3 shadow-[0_4px_12px_rgba(0,102,204,0.15)] transition-all duration-200 active:scale-98">
+                            <span class="relative z-10 flex items-center gap-2" th:text="#{product.review.submit}">Gửi đánh giá</span>
                         </button>
-                        <span id="review-form-message" class="text-sm"></span>
+                        <span id="review-form-message" class="text-xs font-medium tracking-wide"></span>
                     </div>
                 </form>
             </div>
@@ -291,6 +297,35 @@
                 const orderSelect = document.getElementById('review-order-id');
                 const ratingSelect = document.getElementById('review-rating');
                 const commentInput = document.getElementById('review-comment');
+
+                // --- Star Rating Logic ---
+                const highlightStars = (rating) => {
+                    const buttons = formWrap.querySelectorAll('.core-star-container button[data-star]');
+                    buttons.forEach(btn => {
+                        const starVal = Number(btn.dataset.star);
+                        if (starVal <= rating) {
+                            btn.classList.add('text-amber-400');
+                            btn.classList.remove('text-gray-300');
+                        } else {
+                            btn.classList.remove('text-amber-400');
+                            btn.classList.add('text-gray-300');
+                        }
+                    });
+                };
+
+                const bindStarEvents = () => {
+                    const buttons = formWrap.querySelectorAll('.core-star-container button[data-star]');
+                    
+                    buttons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const val = Number(btn.dataset.star);
+                            ratingSelect.value = val;
+                            highlightStars(val);
+                        });
+                        btn.addEventListener('mouseenter', () => highlightStars(Number(btn.dataset.star)));
+                        btn.addEventListener('mouseleave', () => highlightStars(Number(ratingSelect.value)));
+                    });
+                };
                 const formMessage = document.getElementById('review-form-message');
                 const reviewAverage = document.getElementById('review-average');
                 const reviewAverageStars = document.getElementById('review-average-stars');
@@ -430,6 +465,8 @@
                         });
 
                         formWrap.classList.remove('hidden');
+                        bindStarEvents();
+                        highlightStars(Number(ratingSelect.value));
                     } catch (_) {
                         notEligibleMessage.classList.remove('hidden');
                     }
