@@ -5,7 +5,7 @@
     <div class="admin-page-header">
         <div>
             <h1 class="admin-page-title">Duyệt shop</h1>
-            <p class="admin-page-subtitle">Quản lý trạng thái shop bằng dữ liệu thật và lịch sử duyệt.</p>
+            <p class="admin-page-subtitle">Theo dõi và duyệt các shop đăng ký bán hàng.</p>
         </div>
         <form method="get" th:action="@{/admin/shops}" class="flex items-center gap-2">
             <select name="status" class="admin-select">
@@ -38,7 +38,6 @@
             <tr th:each="shop : ${shops}">
                 <td class="p-4">
                     <a class="font-semibold text-indigo-700 hover:text-indigo-900" th:href="@{/admin/shops/{id}(id=${shop.id})}" th:text="${shop.name}">Shop name</a>
-                    <p class="text-xs text-slate-500 mt-1" th:text="${shop.slug}">slug</p>
                 </td>
                 <td class="p-4 text-slate-700" th:text="${shop.owner.fullName != null ? shop.owner.fullName : shop.owner.email}">Owner</td>
                 <td class="p-4 text-slate-500">

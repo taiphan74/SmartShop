@@ -5,7 +5,7 @@
     <div class="admin-page-header">
         <div>
             <h1 class="admin-page-title">Bảng điều khiển tổng quan</h1>
-            <p class="admin-page-subtitle">Dữ liệu thật từ đơn hàng, khách hàng, sản phẩm và shop.</p>
+            <p class="admin-page-subtitle">Tổng quan hoạt động bán hàng trên SmartShop.</p>
         </div>
     </div>
 
@@ -13,7 +13,7 @@
         <div th:each="metric : ${dashboard.metrics()}" class="admin-card admin-card-padded">
             <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500" th:text="${metric.label()}">Metric</p>
             <h3 class="mt-2 text-3xl font-black tracking-tight text-slate-950" th:text="${metric.value()}">0</h3>
-            <span class="mt-4 block text-sm font-semibold text-slate-600" th:text="${metric.helperText()}">Nguồn dữ liệu thật</span>
+            <span class="mt-4 block text-sm font-semibold text-slate-600" th:text="${metric.helperText()}">Thông tin tổng quan</span>
         </div>
     </div>
 

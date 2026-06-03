@@ -6,7 +6,7 @@
 <div th:if="${#fields.hasGlobalErrors()}" class="mb-4 rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
 <div class="grid gap-4 md:grid-cols-2">
 <label class="text-sm font-semibold text-slate-700">Tên<input th:field="*{name}" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{name}" class="text-xs text-rose-600"></span></label>
-<label class="text-sm font-semibold text-slate-700">Slug<input th:field="*{slug}" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{slug}" class="text-xs text-rose-600"></span></label>
+<label class="text-sm font-semibold text-slate-700">Tên đường dẫn<input th:field="*{slug}" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{slug}" class="text-xs text-rose-600"></span></label>
 <label class="text-sm font-semibold text-slate-700">Shop<select th:field="*{shopId}" class="mt-1 w-full rounded border px-3 py-2"><option th:each="shop : ${shops}" th:value="${shop.id}" th:text="${shop.name}">Shop</option></select></label>
 <label class="text-sm font-semibold text-slate-700">Danh mục<select th:field="*{categoryId}" class="mt-1 w-full rounded border px-3 py-2"><option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">Category</option></select></label>
 <label class="text-sm font-semibold text-slate-700">Trạng thái<select th:field="*{status}" class="mt-1 w-full rounded border px-3 py-2"><option value="true">Hiện</option><option value="false">Ẩn</option></select></label>

@@ -28,7 +28,7 @@
                     <dd class="mt-1 text-slate-900" th:text="${review.order.code}">Order</dd>
                 </div>
                 <div>
-                    <dt class="font-semibold text-slate-500">Rating</dt>
+                    <dt class="font-semibold text-slate-500">Điểm đánh giá</dt>
                     <dd class="mt-1 text-amber-600" th:text="${review.rating + ' sao'}">5 sao</dd>
                 </div>
                 <div class="md:col-span-2">
@@ -54,7 +54,7 @@
             </div>
 
             <div class="rounded-xl border border-rose-200 bg-rose-50 p-5 shadow-sm">
-                <h2 class="font-bold text-rose-900">Danger zone</h2>
+                <h2 class="font-bold text-rose-900">Xóa feedback</h2>
                 <p class="mt-2 text-sm text-rose-700">Xóa vĩnh viễn feedback và cập nhật lại điểm trung bình sản phẩm.</p>
                 <form th:action="@{/admin/reviews/{id}/delete(id=${review.id})}" method="post" class="mt-4" onsubmit="return confirm('Xóa vĩnh viễn feedback này?');">
                     <button class="w-full rounded bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700" type="submit">Xóa vĩnh viễn</button>

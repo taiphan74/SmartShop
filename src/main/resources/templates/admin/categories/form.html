@@ -1,15 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: adminLayout(~{::main})}">
 <body><main>
-<div class="mb-6"><a th:href="@{/admin/categories}" class="text-sm font-semibold text-indigo-600">← Quay lại danh mục</a><h1 class="mt-2 text-2xl font-bold text-slate-900" th:text="${category == null ? 'Thêm danh mục' : 'Sửa danh mục'}">Form</h1></div>
-<form th:action="${category == null ? '/admin/categories' : '/admin/categories/' + category.id + '/edit'}" th:object="${form}" method="post" class="max-w-3xl rounded-xl border bg-white p-6 shadow-sm">
-<div th:if="${#fields.hasGlobalErrors()}" class="mb-4 rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-<div class="grid gap-4 md:grid-cols-2">
-<label class="text-sm font-semibold text-slate-700">Tên<input th:field="*{name}" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{name}" class="text-xs text-rose-600"></span></label>
-<label class="text-sm font-semibold text-slate-700">Slug<input th:field="*{slug}" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{slug}" class="text-xs text-rose-600"></span></label>
-<label class="text-sm font-semibold text-slate-700">Path<input th:field="*{path}" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{path}" class="text-xs text-rose-600"></span></label>
-<label class="text-sm font-semibold text-slate-700">Level<input th:field="*{level}" type="number" min="0" class="mt-1 w-full rounded border px-3 py-2"><span th:errors="*{level}" class="text-xs text-rose-600"></span></label>
-<label class="text-sm font-semibold text-slate-700 md:col-span-2">Danh mục cha<select th:field="*{parentId}" class="mt-1 w-full rounded border px-3 py-2"><option value="">Không có</option><option th:each="parent : ${parentCategories}" th:value="${parent.id}" th:text="${parent.path}">parent</option></select></label>
-</div><div class="mt-6 flex justify-end gap-2"><a th:href="@{/admin/categories}" class="rounded border px-4 py-2 text-sm font-semibold">Hủy</a><button class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Lưu</button></div>
+<div class="mb-6">
+    <a th:href="@{/admin/categories}" class="admin-back-link">← Quay lại danh mục</a>
+    <h1 class="mt-2 text-2xl font-bold text-slate-900" th:text="${category == null ? 'Thêm danh mục' : 'Sửa danh mục'}">Form</h1>
+    <p class="mt-1 text-sm text-slate-600">Thông tin hiển thị sẽ tự cập nhật theo tên và danh mục cha.</p>
+</div>
+
+<form id="category-form"
+      th:action="${category == null ? '/admin/categories' : '/admin/categories/' + category.id + '/edit'}"
+      th:object="${form}"
+      method="post"
+      class="max-w-3xl rounded-xl border bg-white p-6 shadow-sm">
+    <div th:if="${#fields.hasGlobalErrors()}"
+         class="mb-4 rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+         th:each="err : ${#fields.globalErrors()}"
+         th:text="${err}"></div>
+
+    <div class="grid gap-4">
+        <label class="admin-field">
+            <span>Tên danh mục</span>
+            <input id="category-name" th:field="*{name}" class="admin-input" autocomplete="off">
+            <span th:errors="*{name}" class="text-xs text-rose-600"></span>
+        </label>
+
+        <label class="admin-field">
+            <span>Danh mục cha</span>
+            <select id="category-parent" th:field="*{parentId}" class="admin-select">
+                <option value="" data-path="" data-level="-1">Không có - danh mục gốc</option>
+                <option th:each="parent : ${parentCategories}"
+                        th:value="${parent.id}"
+                        th:disabled="${category != null and parent.id == category.id}"
+                        th:attr="data-path=${parent.path},data-level=${parent.level}"
+                        th:text="${#strings.repeat('— ', parent.level)} + ${parent.name}">parent</option>
+            </select>
+        </label>
+
+        <div class="grid gap-4 md:grid-cols-3">
+            <div class="admin-category-preview">
+                <span>Tên đường dẫn</span>
+                <strong id="category-slug-preview" th:text="*{slug} ?: 'tu-dong'">tu-dong</strong>
+            </div>
+            <div class="admin-category-preview md:col-span-2">
+                <span>Đường dẫn xem trước</span>
+                <strong id="category-path-preview" th:text="*{path} ?: 'tu-dong'">tu-dong</strong>
+            </div>
+            <div class="admin-category-preview">
+                <span>Cấp hiển thị</span>
+                <strong id="category-level-preview" th:text="*{level} ?: 0">0</strong>
+            </div>
+        </div>
+    </div>
+
+    <input id="category-slug" type="hidden" th:field="*{slug}">
+    <input id="category-path" type="hidden" th:field="*{path}">
+    <input id="category-level" type="hidden" th:field="*{level}">
+
+    <div class="mt-6 flex justify-end gap-2">
+        <a th:href="@{/admin/categories}" class="rounded border px-4 py-2 text-sm font-semibold">Hủy</a>
+        <button class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Lưu</button>
+    </div>
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.getElementById('category-name');
+        const parentSelect = document.getElementById('category-parent');
+        const slugInput = document.getElementById('category-slug');
+        const pathInput = document.getElementById('category-path');
+        const levelInput = document.getElementById('category-level');
+        const slugPreview = document.getElementById('category-slug-preview');
+        const pathPreview = document.getElementById('category-path-preview');
+        const levelPreview = document.getElementById('category-level-preview');
+
+        function toSlug(value) {
+            return (value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D')
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w-]+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        function updateGeneratedFields() {
+            const selected = parentSelect.options[parentSelect.selectedIndex];
+            const parentPath = selected ? selected.dataset.path || '' : '';
+            const parentLevel = selected ? Number(selected.dataset.level || -1) : -1;
+            const slug = toSlug(nameInput.value) || 'tu-dong';
+            const path = parentPath ? parentPath + '/' + slug : slug;
+            const level = parentLevel + 1;
+
+            slugInput.value = slug;
+            pathInput.value = path;
+            levelInput.value = level;
+            slugPreview.textContent = slug;
+            pathPreview.textContent = path;
+            levelPreview.textContent = level;
+        }
+
+        nameInput.addEventListener('input', updateGeneratedFields);
+        parentSelect.addEventListener('change', updateGeneratedFields);
+        updateGeneratedFields();
+    });
+</script>
 </main></body></html>
