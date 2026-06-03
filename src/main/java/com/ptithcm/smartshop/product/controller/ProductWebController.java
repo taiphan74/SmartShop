@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -61,38 +58,11 @@ public class ProductWebController {
     public String getProductDetail(@PathVariable("slug") String slug, Model model) {
         Optional<ProductDetailDTO> productOpt = productService.findBySlug(slug);
 
-        if (productOpt.isPresent()) {
-            ProductDetailDTO productDTO = productOpt.get();
-
-            String mainImageUrl = "https://via.placeholder.com/400";
-            if (productDTO.getImages() != null && !productDTO.getImages().isEmpty()) {
-                mainImageUrl = productDTO.getImages().stream()
-                        .filter(img -> img.getIsMain() != null && img.getIsMain())
-                        .findFirst()
-                        .map(img -> img.getImageUrl())
-                        .orElse(productDTO.getImages().get(0).getImageUrl());
-            }
-
-            Map<String, Object> productView = new HashMap<>();
-            productView.put("id", productDTO.getId());
-            productView.put("name", productDTO.getName());
-            productView.put("slug", productDTO.getSlug());
-            productView.put("price", productDTO.getPrice() != null ? productDTO.getPrice() : BigDecimal.ZERO);
-            productView.put("images", productDTO.getImages());
-            productView.put("mainImageUrl", mainImageUrl);
-            productView.put("description", productDTO.getDescription());
-            productView.put("stockQuantity", productDTO.getStockQuantity());
-            productView.put("categoryName", productDTO.getCategoryName());
-            productView.put("reviewCount", productDTO.getReviewCount());
-            productView.put("ratingSum", productDTO.getRatingSum());
-            productView.put("averageRating", productDTO.getAverageRating());
-            productView.put("options", productDTO.getOptions());
-            productView.put("variants", productDTO.getVariants());
-
-            model.addAttribute("product", productView);
-            return "product/detail";
+        if (productOpt.isEmpty()) {
+            return "error/404";
         }
 
-        return "error/404";
+        model.addAttribute("product", productOpt.get());
+        return "product/detail";
     }
 }

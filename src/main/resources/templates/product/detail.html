@@ -95,6 +95,24 @@
                         <div class="text-brand-red text-[32px] font-medium leading-none" th:text="'₫' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">₫479.000</div>
                     </div>
 
+                    <!-- Variant Selector -->
+                    <div id="variant-selector" class="flex flex-col gap-4 mb-6" th:if="${!#lists.isEmpty(product.options)}">
+                        <div th:each="option : ${product.options}" class="flex items-start gap-3" th:data-option-id="${option.id}">
+                            <div class="w-[110px] flex-shrink-0 text-text-secondary text-sm pt-1" th:text="${option.name}">Màu sắc</div>
+                            <div class="flex flex-wrap gap-2 option-values" th:data-option-id="${option.id}">
+                                <button type="button"
+                                        th:each="val : ${option.values}"
+                                        class="option-value-btn px-4 py-2 border border-border-strong rounded-md text-sm text-text-primary bg-surface hover:border-primary hover:bg-surface-soft transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                        th:data-option-id="${option.id}"
+                                        th:data-value-id="${val.id}"
+                                        th:text="${val.value}">
+                                    Đen
+                                </button>
+                            </div>
+                        </div>
+                        <div id="variant-stock-info" class="text-xs text-text-secondary ml-[122px]"></div>
+                    </div>
+
                     <!-- Info Rows -->
                     <div class="flex flex-col gap-6 text-sm text-text-secondary mb-4">
 
@@ -115,6 +133,7 @@
                     <div class="flex flex-wrap items-center gap-3.5 mt-4">
                         <form th:action="@{/cart/add}" method="post" class="flex-1 min-w-[260px]">
                             <input type="hidden" name="productId" th:value="${product.id}">
+                            <input type="hidden" name="variantId" id="add-to-cart-variant-id" value="">
                             <input type="hidden" name="quantity" id="add-to-cart-quantity" value="1">
                             <input type="hidden" name="redirectUrl" th:value="@{'/products/' + ${product.slug}}">
                             <button type="submit" class="w-full bg-brand-red-soft hover:bg-brand-red-soft/80 text-brand-red border border-brand-red font-medium h-12 px-6 flex items-center justify-center gap-2 rounded-md shadow-sm transition-colors cursor-pointer">
@@ -123,6 +142,7 @@
                         </form>
                         <form th:action="@{/cart/add}" method="post" class="w-[180px]">
                             <input type="hidden" name="productId" th:value="${product.id}">
+                            <input type="hidden" name="variantId" id="buy-now-variant-id" value="">
                             <input type="hidden" name="quantity" id="buy-now-quantity" value="1">
                             <input type="hidden" name="redirectUrl" value="/checkout">
                             <button type="submit" class="w-full bg-brand-blue hover:bg-brand-blue-hover text-white font-medium h-12 flex items-center justify-center rounded-md shadow-sm transition-colors cursor-pointer">
@@ -277,6 +297,18 @@
                 syncQuantity(quantityInput.value);
             })();
         </script>
+
+        <script th:inline="javascript">
+            window.productVariantConfig = {
+                options: /*[[${product.options}]]*/ [],
+                variants: /*[[${product.variants}]]*/ [],
+                basePrice: /*[[${product.price}]]*/ 0,
+                baseStock: /*[[${product.stockQuantity}]]*/ 0,
+                baseMainImageUrl: /*[[${product.mainImageUrl}]]*/ '',
+                hasVariants: /*[[${!#lists.isEmpty(product.variants)}]]*/ false
+            };
+        </script>
+        <script defer src="/js/product-variant.js"></script>
 
         <script th:inline="javascript">
             window.reviewConfig = {

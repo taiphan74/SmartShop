@@ -99,6 +99,14 @@ public class ProductMapper {
                     .collect(Collectors.toList()));
         }
 
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            dto.setMainImageUrl(product.getImages().stream()
+                    .filter(ProductImage::getIsMain)
+                    .findFirst()
+                    .map(ProductImage::getImageUrl)
+                    .orElse(product.getImages().get(0).getImageUrl()));
+        }
+
         return dto;
     }
 

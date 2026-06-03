@@ -23,6 +23,7 @@ public class ProductDetailDTO {
     private List<ProductImageDTO> images;
     private List<ProductOptionDTO> options;
     private List<ProductVariantDTO> variants;
+    private String mainImageUrl;
 
     public ProductDetailDTO() {
     }
@@ -161,6 +162,14 @@ public class ProductDetailDTO {
 
     public void setVariants(List<ProductVariantDTO> variants) {
         this.variants = variants;
+    }
+
+    public String getMainImageUrl() {
+        return mainImageUrl;
+    }
+
+    public void setMainImageUrl(String mainImageUrl) {
+        this.mainImageUrl = mainImageUrl;
     }
 }
 
