@@ -97,40 +97,17 @@
 					<div class="mb-4 bg-green-50 text-green-700 p-3 rounded-lg text-sm font-medium border border-green-100 shadow-sm"
 					     th:if="${successMessage}" th:text="${successMessage}"></div>
 
-					<!-- Product Grid -->
-					<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5" th:if="${products != null and !products.isEmpty()}">
-						<a th:each="product : ${products}"
-						   th:href="@{/products/{slug}(slug=${product.slug})}"
-						   class="bg-white rounded-xl border border-gray-100 hover:border-brand-blue/30 hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
-							<div class="relative pt-[100%] overflow-hidden rounded-t-xl bg-gray-50">
-								<img th:src="${product.thumbnailUrl}"
-								     th:alt="${product.name}"
-								     class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-								     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23f1f5f9%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-family=%22Arial%22 font-size=%2218%22%3ESmartShop%3C/text%3E%3C/svg%3E'">
-							</div>
-							<div class="p-3 md:p-4 flex flex-col flex-1">
-								<h3 class="text-gray-800 text-sm md:text-base font-medium line-clamp-2 mb-2 group-hover:text-brand-blue transition-colors"
-								    th:text="${product.name}">Tên sản phẩm</h3>
-								<div class="product-rating flex items-center gap-1 mb-2 text-[10px] md:text-xs">
-									<span class="font-semibold text-brand-red"
-									      data-rating-value
-									      th:attr="data-rating=${product.averageRating != null ? product.averageRating : 0}">0,0</span>
-									<span class="rating-stars"
-									      data-rating-stars
-									      th:attr="data-rating=${product.averageRating != null ? product.averageRating : 0}">
-										<span class="rating-stars__base">★★★★★</span>
-										<span class="rating-stars__fill">★★★★★</span>
-									</span>
-									<span class="text-gray-400 font-normal"
-									      th:text="'(' + (${product.reviewCount} != null ? ${product.reviewCount} : 0) + ')'">(0)</span>
-								</div>
-								<div class="mt-auto">
-									<p class="text-brand-red text-base md:text-lg font-bold"
-									   th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '₫'">0₫</p>
-								</div>
-							</div>
-						</a>
-					</div>
+					<!-- Product Grid (supports both Page and List) -->
+					<div th:if="${products != null and !products.isEmpty()}"
+					     th:replace="~{fragments/product-grid :: grid(products=${products})}"></div>
+
+					<!-- Pagination -->
+					<div th:if="${products != null and products.totalPages != null}"
+					     th:replace="~{fragments/pagination :: pagination(
+					         page=${products},
+					         baseUrl='/',
+					         queryParams=''
+					     )}"></div>
 
 					<!-- Empty State -->
 					<div class="py-12 text-center" th:if="${products == null or products.isEmpty()}">

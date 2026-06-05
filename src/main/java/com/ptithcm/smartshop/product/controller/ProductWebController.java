@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
@@ -37,9 +40,17 @@ public class ProductWebController {
     }
 
     @GetMapping
-    public String getHome(@RequestParam(value = "category", required = false) String categorySlug, Model model) {
+    public String getHome(
+            @RequestParam(value = "category", required = false) String categorySlug,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "12") int size,
+            Model model) {
+        int safeSize = Math.min(Math.max(size, 1), 50);
+        int safePage = Math.max(page, 0);
+        Pageable pageable = PageRequest.of(safePage, safeSize);
+
         if (categorySlug == null || categorySlug.isBlank()) {
-            List<ProductListDTO> products = productService.findAllProducts();
+            Page<ProductListDTO> products = productService.findAllProducts(pageable);
             model.addAttribute("products", products);
             model.addAttribute("activeCategory", null);
             model.addAttribute("childCategories", List.of());
@@ -53,7 +64,7 @@ public class ProductWebController {
         }
 
         CategoryDTO activeCategory = categoryOpt.get();
-        List<ProductListDTO> products = productService.findPublicProductsByCategorySlug(categorySlug);
+        Page<ProductListDTO> products = productService.findPublicProductsByCategorySlug(categorySlug, pageable);
         List<CategoryDTO> childCategories = categoryService.findChildrenBySlug(categorySlug);
 
         model.addAttribute("products", products);

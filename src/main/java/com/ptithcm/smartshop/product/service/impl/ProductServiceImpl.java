@@ -88,11 +88,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ProductListDTO> findAllProducts(Pageable pageable) {
+        Page<ProductProjection> projections = productRepository.findPublicProductsFromApprovedShops(pageable);
+        return projections.map(productMapper::toListDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ProductListDTO> findPublicProductsByCategorySlug(String categorySlug) {
         Category category = categoryRepository.findBySlug(categorySlug)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", categorySlug));
         List<ProductProjection> projections = productRepository.findPublicProductsByCategoryPath(category.getPath());
         return productMapper.toProjectionDTOList(projections);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductListDTO> findPublicProductsByCategorySlug(String categorySlug, Pageable pageable) {
+        Category category = categoryRepository.findBySlug(categorySlug)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", categorySlug));
+        Page<ProductProjection> projections = productRepository.findPublicProductsByCategoryPath(category.getPath(), pageable);
+        return projections.map(productMapper::toListDTO);
     }
 
     @Override

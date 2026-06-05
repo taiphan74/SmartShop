@@ -24,8 +24,16 @@
         </section>
 
         <section th:if="${products != null and !products.isEmpty()}">
-            <div th:replace="~{fragments/product-grid :: grid(products=${products})}"></div>
+            <div th:replace="~{fragments/product-grid :: grid(products=${products.content != null ? products.content : products})}"></div>
         </section>
+
+        <!-- Pagination -->
+        <div th:if="${products != null and products.totalPages != null}"
+             th:replace="~{fragments/pagination :: pagination(
+                 page=${products},
+                 baseUrl='/products',
+                 queryParams=${selectedCategorySlug != null ? 'category=' + selectedCategorySlug : ''}
+             )}"></div>
 
         <section class="empty-state" th:if="${products == null or products.isEmpty()}">
             <p th:if="${activeCategory != null}" th:text="#{product.list.category_empty}">

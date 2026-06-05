@@ -11,9 +11,13 @@ import com.ptithcm.smartshop.security.session.SessionUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
@@ -31,7 +35,11 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(HttpServletRequest request, Model model) {
+    public String home(
+            HttpServletRequest request,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "12") int size,
+            Model model) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             SessionUser sessionUser = (SessionUser) session.getAttribute(SessionConstants.CURRENT_USER);
@@ -46,7 +54,10 @@ public class HomeController {
 
         model.addAttribute("headerCategories", rootCategories.stream().limit(8).toList());
 
-        List<ProductListDTO> products = productService.findAllProducts();
+        int safeSize = Math.min(Math.max(size, 1), 50);
+        int safePage = Math.max(page, 0);
+        Pageable pageable = PageRequest.of(safePage, safeSize);
+        Page<ProductListDTO> products = productService.findAllProducts(pageable);
         model.addAttribute("products", products);
 
         model.addAttribute("banners", bannerService.findAllActive());

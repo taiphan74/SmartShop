@@ -17,7 +17,11 @@ public interface ProductService {
 
     List<ProductListDTO> findAllProducts();
 
+    Page<ProductListDTO> findAllProducts(Pageable pageable);
+
     List<ProductListDTO> findPublicProductsByCategorySlug(String categorySlug);
+
+    Page<ProductListDTO> findPublicProductsByCategorySlug(String categorySlug, Pageable pageable);
 
     Optional<ProductDetailDTO> findById(String id);
 
