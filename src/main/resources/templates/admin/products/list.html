@@ -43,6 +43,14 @@
             </tr>
         </tbody>
     </table>
+
+                    <!-- Pagination -->
+                    <div th:if="${products != null and products.totalPages > 1}"
+                         th:replace="~{fragments/pagination :: pagination(
+                             page=${products},
+                             baseUrl='/admin/products',
+                             queryParams=${selectedStatus != null ? 'status=' + selectedStatus : ''}
+                         )}"></div>
 </div>
 </main></body>
 </html>

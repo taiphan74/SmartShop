@@ -41,8 +41,14 @@ public class AdminProductController {
 
     @GetMapping
     @Transactional(readOnly = true)
-    public String list(@RequestParam(required = false) Boolean status, @RequestParam(defaultValue = "0") int page, Model model) {
-        model.addAttribute("products", productManagementService.list(status, PageRequest.of(Math.max(page, 0), 20, Sort.by(Sort.Direction.DESC, "createdAt"))));
+    public String list(
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
+            Model model) {
+        int safeSize = Math.min(Math.max(size, 1), 50);
+        int safePage = Math.max(page, 0);
+        model.addAttribute("products", productManagementService.list(status, PageRequest.of(safePage, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"))));
         model.addAttribute("selectedStatus", status);
         return "admin/products/list";
     }
