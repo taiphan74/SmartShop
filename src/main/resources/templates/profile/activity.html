@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Lịch sử & Wishlist | SmartShop')}"></head>
+<body class="bg-page-bg text-text-primary font-sans antialiased">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="mx-auto max-w-[1280px] px-4 py-6 md:px-6">
+        <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Tài khoản</p>
+                <h1 class="mt-1 text-2xl font-bold text-gray-950">Lịch sử & Wishlist</h1>
+            </div>
+            <a href="/profile" class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Quay lại hồ sơ</a>
+        </div>
+
+        <div th:if="${successMessage}" class="mb-4 rounded-lg border border-green-100 bg-green-50 p-3 text-sm font-medium text-green-700" th:text="${successMessage}"></div>
+
+        <section class="mb-8 rounded-lg border border-gray-100 bg-white shadow-sm">
+            <div class="border-b border-gray-100 p-4 md:p-5">
+                <h2 class="text-lg font-bold text-gray-900">Sản phẩm đã xem</h2>
+            </div>
+            <div class="p-4 md:p-5">
+                <div th:if="${#lists.isEmpty(activity.viewedProducts())}" class="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">Chưa có sản phẩm đã xem.</div>
+                <div th:unless="${#lists.isEmpty(activity.viewedProducts())}" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <th:block th:each="item : ${activity.viewedProducts()}">
+                        <div th:replace="~{profile/activity :: productCard(${item}, false)}"></div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-8 rounded-lg border border-gray-100 bg-white shadow-sm">
+            <div class="border-b border-gray-100 p-4 md:p-5">
+                <h2 class="text-lg font-bold text-gray-900">Cửa hàng đã xem</h2>
+            </div>
+            <div class="p-4 md:p-5">
+                <div th:if="${#lists.isEmpty(activity.viewedShops())}" class="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">Chưa có cửa hàng đã xem.</div>
+                <div th:unless="${#lists.isEmpty(activity.viewedShops())}" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <th:block th:each="item : ${activity.viewedShops()}">
+                        <div th:replace="~{profile/activity :: shopCard(${item}, false)}"></div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-8 rounded-lg border border-gray-100 bg-white shadow-sm">
+            <div class="border-b border-gray-100 p-4 md:p-5">
+                <h2 class="text-lg font-bold text-gray-900">Sản phẩm trong Wishlist</h2>
+            </div>
+            <div class="p-4 md:p-5">
+                <div th:if="${#lists.isEmpty(activity.wishlistProducts())}" class="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">Chưa lưu sản phẩm nào.</div>
+                <div th:unless="${#lists.isEmpty(activity.wishlistProducts())}" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <th:block th:each="item : ${activity.wishlistProducts()}">
+                        <div th:replace="~{profile/activity :: productCard(${item}, true)}"></div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+
+        <section class="rounded-lg border border-gray-100 bg-white shadow-sm">
+            <div class="border-b border-gray-100 p-4 md:p-5">
+                <h2 class="text-lg font-bold text-gray-900">Cửa hàng trong Wishlist</h2>
+            </div>
+            <div class="p-4 md:p-5">
+                <div th:if="${#lists.isEmpty(activity.wishlistShops())}" class="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">Chưa lưu cửa hàng nào.</div>
+                <div th:unless="${#lists.isEmpty(activity.wishlistShops())}" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <th:block th:each="item : ${activity.wishlistShops()}">
+                        <div th:replace="~{profile/activity :: shopCard(${item}, true)}"></div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <article th:fragment="productCard(item, removable)" th:if="${item != null}" class="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+        <a th:href="@{'/products/' + ${item.slug()}}" class="block">
+            <div class="aspect-square bg-gray-50">
+                <img th:if="${item.thumbnailUrl() != null && !item.thumbnailUrl().isBlank()}" th:src="${item.thumbnailUrl()}" th:alt="${item.name()}" class="h-full w-full object-cover">
+                <div th:unless="${item.thumbnailUrl() != null && !item.thumbnailUrl().isBlank()}" class="flex h-full items-center justify-center text-sm text-gray-400">No image</div>
+            </div>
+            <div class="p-4">
+                <h3 class="line-clamp-2 min-h-[2.5rem] text-sm font-bold text-gray-900" th:text="${item.name()}">Tên sản phẩm</h3>
+                <p class="mt-1 truncate text-xs text-gray-500" th:text="${item.categoryName()}">Danh mục</p>
+                <p class="mt-2 text-base font-bold text-brand-red" th:text="'₫' + ${#numbers.formatDecimal(item.price(), 0, 'COMMA', 0, 'POINT')}">₫0</p>
+            </div>
+        </a>
+        <form th:if="${removable}" th:action="@{'/wishlist/products/' + ${item.id()} + '/toggle'}" method="post" class="border-t border-gray-100 p-3">
+            <input type="hidden" name="redirectUrl" value="/profile/activity">
+            <button type="submit" class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100">Bỏ lưu</button>
+        </form>
+    </article>
+
+    <article th:fragment="shopCard(item, removable)" th:if="${item != null}" class="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+        <div class="flex items-start gap-3">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-100 bg-blue-50 text-sm font-bold text-brand-blue">
+                <img th:if="${item.logoUrl() != null && !item.logoUrl().isBlank()}" th:src="${item.logoUrl()}" th:alt="${item.name()}" class="h-full w-full object-cover">
+                <span th:unless="${item.logoUrl() != null && !item.logoUrl().isBlank()}" th:text="${item.name() != null && !item.name().isBlank()} ? ${item.name().substring(0, 1)} : 'S'">S</span>
+            </div>
+            <div class="min-w-0 flex-1">
+                <h3 class="truncate text-sm font-bold text-gray-900" th:text="${item.name()}">Tên cửa hàng</h3>
+                <p class="mt-1 line-clamp-2 text-xs text-gray-500" th:text="${item.description()}">Mô tả cửa hàng</p>
+            </div>
+        </div>
+        <form th:if="${removable}" th:action="@{'/wishlist/shops/' + ${item.id()} + '/toggle'}" method="post" class="mt-4">
+            <input type="hidden" name="redirectUrl" value="/profile/activity">
+            <button type="submit" class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100">Bỏ lưu</button>
+        </form>
+    </article>
+</body>
+</html>

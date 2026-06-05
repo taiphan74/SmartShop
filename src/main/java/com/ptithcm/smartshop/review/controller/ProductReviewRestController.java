@@ -1,11 +1,11 @@
 package com.ptithcm.smartshop.review.controller;
 
+import com.ptithcm.smartshop.product.dto.PageResponse;
 import com.ptithcm.smartshop.review.dto.ReviewRequest;
 import com.ptithcm.smartshop.review.dto.ReviewResponse;
 import com.ptithcm.smartshop.review.service.ProductReviewService;
 import com.ptithcm.smartshop.security.principal.CustomUserDetails;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,7 @@ public class ProductReviewRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ReviewResponse>> getReviews(
+    public ResponseEntity<PageResponse<ReviewResponse>> getReviews(
             @PathVariable UUID productId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {

@@ -1,0 +1,212 @@
+databaseChangeLog:
+  - changeSet:
+      id: 027-create-user-activity-tables
+      author: codex
+      changes:
+        - createTable:
+            tableName: user_viewed_products
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_viewed_products_user
+                    references: users(id)
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_viewed_products_product
+                    references: products(id)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: viewed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: user_viewed_products
+            columnNames: user_id, product_id
+            constraintName: uk_user_viewed_products_user_product
+        - createIndex:
+            tableName: user_viewed_products
+            indexName: idx_user_viewed_products_user_viewed
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: viewed_at
+        - createIndex:
+            tableName: user_viewed_products
+            indexName: idx_user_viewed_products_product
+            columns:
+              - column:
+                  name: product_id
+
+        - createTable:
+            tableName: user_viewed_shops
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_viewed_shops_user
+                    references: users(id)
+              - column:
+                  name: shop_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_viewed_shops_shop
+                    references: shops(id)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: viewed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: user_viewed_shops
+            columnNames: user_id, shop_id
+            constraintName: uk_user_viewed_shops_user_shop
+        - createIndex:
+            tableName: user_viewed_shops
+            indexName: idx_user_viewed_shops_user_viewed
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: viewed_at
+        - createIndex:
+            tableName: user_viewed_shops
+            indexName: idx_user_viewed_shops_shop
+            columns:
+              - column:
+                  name: shop_id
+
+        - createTable:
+            tableName: user_wishlist_products
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_wishlist_products_user
+                    references: users(id)
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_wishlist_products_product
+                    references: products(id)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: user_wishlist_products
+            columnNames: user_id, product_id
+            constraintName: uk_user_wishlist_products_user_product
+        - createIndex:
+            tableName: user_wishlist_products
+            indexName: idx_user_wishlist_products_user_created
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: user_wishlist_products
+            indexName: idx_user_wishlist_products_product
+            columns:
+              - column:
+                  name: product_id
+
+        - createTable:
+            tableName: user_wishlist_shops
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_wishlist_shops_user
+                    references: users(id)
+              - column:
+                  name: shop_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_wishlist_shops_shop
+                    references: shops(id)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: user_wishlist_shops
+            columnNames: user_id, shop_id
+            constraintName: uk_user_wishlist_shops_user_shop
+        - createIndex:
+            tableName: user_wishlist_shops
+            indexName: idx_user_wishlist_shops_user_created
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: user_wishlist_shops
+            indexName: idx_user_wishlist_shops_shop
+            columns:
+              - column:
+                  name: shop_id

@@ -3,6 +3,7 @@ package com.ptithcm.smartshop.review.service.impl;
 import com.ptithcm.smartshop.order.domain.entity.Order;
 import com.ptithcm.smartshop.order.domain.enums.OrderStatus;
 import com.ptithcm.smartshop.order.domain.repository.OrderRepository;
+import com.ptithcm.smartshop.product.dto.PageResponse;
 import com.ptithcm.smartshop.product.entity.Product;
 import com.ptithcm.smartshop.product.repository.ProductRepository;
 import com.ptithcm.smartshop.review.dto.ReviewRequest;
@@ -86,9 +87,16 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ReviewResponse> getProductReviews(UUID productId, int page, int size) {
-        return reviewRepository.findByProductIdAndVisible(productId, true, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")))
+    public PageResponse<ReviewResponse> getProductReviews(UUID productId, int page, int size) {
+        Page<ReviewResponse> reviews = reviewRepository.findByProductIdAndVisible(productId, true, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")))
                 .map(this::mapToResponse);
+        return new PageResponse<>(
+                reviews.getContent(),
+                reviews.getNumber(),
+                reviews.getSize(),
+                reviews.getTotalElements(),
+                reviews.getTotalPages(),
+                reviews.isLast());
     }
 
     @Override

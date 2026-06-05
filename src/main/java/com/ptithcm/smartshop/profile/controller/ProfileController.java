@@ -1,5 +1,6 @@
 package com.ptithcm.smartshop.profile.controller;
 
+import com.ptithcm.smartshop.activity.service.UserActivityService;
 import com.ptithcm.smartshop.profile.dto.ProfileUpdateForm;
 import com.ptithcm.smartshop.profile.dto.ShopRegistrationForm;
 import com.ptithcm.smartshop.security.session.SessionConstants;
@@ -8,6 +9,7 @@ import com.ptithcm.smartshop.shop.service.ShopRegistrationService;
 import com.ptithcm.smartshop.user.entity.User;
 import com.ptithcm.smartshop.user.repository.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.context.MessageSource;
 import java.util.Locale;
@@ -25,13 +27,23 @@ public class ProfileController {
 
     private final UserRepository userRepository;
     private final ShopRegistrationService shopRegistrationService;
+    private final UserActivityService userActivityService;
 
     private final MessageSource messageSource;
 
-    public ProfileController(UserRepository userRepository, ShopRegistrationService shopRegistrationService, MessageSource messageSource) {
+    @Autowired
+    public ProfileController(UserRepository userRepository,
+            ShopRegistrationService shopRegistrationService,
+            UserActivityService userActivityService,
+            MessageSource messageSource) {
         this.userRepository = userRepository;
         this.shopRegistrationService = shopRegistrationService;
+        this.userActivityService = userActivityService;
         this.messageSource = messageSource;
+    }
+
+    public ProfileController(UserRepository userRepository, ShopRegistrationService shopRegistrationService, MessageSource messageSource) {
+        this(userRepository, shopRegistrationService, null, messageSource);
     }
 
     @GetMapping("/profile")
@@ -45,6 +57,7 @@ public class ProfileController {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         model.addAttribute("user", user);
         model.addAttribute("isEdit", isEdit);
+        model.addAttribute("profileForm", new ProfileUpdateForm(user.getFullName(), user.getPhone()));
         if (isEdit) {
             model.addAttribute("profileForm", new ProfileUpdateForm(user.getFullName(), user.getPhone()));
         }
@@ -111,6 +124,17 @@ public class ProfileController {
         model.addAttribute("shopForm", new ShopRegistrationForm("", "", "", ""));
     }
         return "profile/shops/register"; 
+    }
+
+    @GetMapping("/profile/activity")
+    public String activity(
+            @SessionAttribute(name = SessionConstants.CURRENT_USER, required = false) SessionUser sessionUser,
+            Model model) {
+        if (sessionUser == null) {
+            return "redirect:/auth/login";
+        }
+        model.addAttribute("activity", userActivityService.getActivityView(sessionUser.id(), 24));
+        return "profile/activity";
     }
 
 }

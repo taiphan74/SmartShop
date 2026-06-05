@@ -81,6 +81,13 @@ public class ProductMapper {
             dto.setCategoryName(product.getCategory().getName());
         }
 
+        if (product.getShop() != null) {
+            dto.setShopId(Objects.toString(product.getShop().getId(), null));
+            dto.setShopName(product.getShop().getName());
+            dto.setShopSlug(product.getShop().getSlug());
+            dto.setShopLogoUrl(product.getShop().getLogoUrl());
+        }
+
         if (product.getImages() != null) {
             dto.setImages(product.getImages().stream()
                     .map(this::imageToDTO)
@@ -97,6 +104,14 @@ public class ProductMapper {
             dto.setVariants(product.getVariants().stream()
                     .map(this::toVariantDTO)
                     .collect(Collectors.toList()));
+        }
+
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            dto.setMainImageUrl(product.getImages().stream()
+                    .filter(ProductImage::getIsMain)
+                    .findFirst()
+                    .map(ProductImage::getImageUrl)
+                    .orElse(product.getImages().get(0).getImageUrl()));
         }
 
         return dto;
